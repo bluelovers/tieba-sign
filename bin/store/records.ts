@@ -2,6 +2,7 @@ import cache from '../../lib/cache';
 import bluebird = require('bluebird');
 import { getDate } from '../../lib/helpers';
 import fs = require('fs-extra');
+import { console } from '../../lib/console';
 
 let CACHE_DB_KEY = 'records';
 

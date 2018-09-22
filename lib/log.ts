@@ -1,6 +1,7 @@
 import ora = require( 'ora' );
 import chalk = require( 'chalk' );
 import event = require( './event' );
+import { console } from './console';
 
 const logger = {
 	log: function ( message, label? ) {
@@ -32,11 +33,11 @@ export = function () {
 	/* getlikes START */
 	event.on( 'getlikes:start', function ( data ) {
 		spinner.start();
-		spinner.text = '获取喜欢的贴吧列表 ' + data.current + '/' + data.total + '页';
+		spinner.text = '獲取喜歡的貼吧列表 ' + data.current + '/' + data.total + '頁';
 		spinner.render();
 	} );
 	event.on( 'getlikes:process', function ( data ) {
-		spinner.text = '获取喜欢的贴吧列表 ' + data.current + '/' + data.total + '页';
+		spinner.text = '獲取喜歡的貼吧列表 ' + data.current + '/' + data.total + '頁';
 		spinner.render();
 	} );
 	event.on( 'getlikes:error', function ( error ) {
@@ -45,7 +46,7 @@ export = function () {
 	} );
 	event.on( 'getlikes:stop', function ( likes ) {
 		spinner.stop();
-		console.log( '开始签到 ' + likes.length + ' 个贴吧\n' );
+		console.log( '開始簽到 ' + likes.length + ' 個貼吧\n' );
 	} );
 	/* getlikes END */
 
@@ -57,28 +58,28 @@ export = function () {
 		notSupported: 0,
 	};
 	event.on( 'sign:success', function ( data ) {
-		logger.success( data.name + '吧，签到成功，经验 +' + data.point );
+		logger.success( data.name + '吧，簽到成功，經驗 +' + data.point );
 		count.success++;
 	} );
 	event.on( 'sign:already-signed', function ( data ) {
-		logger.success( data.name + '吧，已签到' );
+		logger.success( data.name + '吧，已簽到' );
 		count.alreadySigned++;
 	} );
 	event.on( 'sign:failed', function ( data ) {
-		logger.error( data.name + '吧，签到失败' );
+		logger.error( data.name + '吧，簽到失敗' );
 		count.failed++;
 	} );
 	event.on( 'sign:not-support', function ( data ) {
-		logger.warn( data.name + '吧，不支持签到' );
+		logger.warn( data.name + '吧，不支持簽到' );
 		count.notSupported++;
 	} );
 
 	const startTime = Date.now();
 	event.on( 'sign:end', function ( data ) {
-		console.log( ' 本次签到耗时：' + ( Date.now() - startTime ) / 1000 + 's' );
-		console.log( ' 签到成功/已签到：' + ( count.success + count.alreadySigned ) );
-		console.log( ' 不支持签到：' + count.notSupported );
-		console.log( ' 签到失败：' + count.failed );
+		console.log( ' 本次簽到耗時：' + ( Date.now() - startTime ) / 1000 + 's' );
+		console.log( ' 簽到成功/已簽到：' + ( count.success + count.alreadySigned ) );
+		console.log( ' 不支持簽到：' + count.notSupported );
+		console.log( ' 簽到失敗：' + count.failed );
 	} );
 	/* sign END */
 }

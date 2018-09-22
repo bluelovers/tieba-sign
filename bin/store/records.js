@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const cache_1 = require("../../lib/cache");
 const helpers_1 = require("../../lib/helpers");
+const console_1 = require("../../lib/console");
 let CACHE_DB_KEY = 'records';
 function getkey(type) {
     let date = helpers_1.getDate();
@@ -35,7 +36,7 @@ function load(type) {
 }
 exports.load = load;
 function clear() {
-    return cache_1.default.clearKey(CACHE_DB_KEY).then(ls => console.log(ls));
+    return cache_1.default.clearKey(CACHE_DB_KEY).then(ls => console_1.console.log(ls));
 }
 exports.clear = clear;
 function close() {

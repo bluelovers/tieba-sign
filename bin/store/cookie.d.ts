@@ -5,5 +5,5 @@ export declare function save(cookie: {
 export declare function load(): bluebird<{
     bduss: string;
 }>;
-export declare function clear(): any;
+export declare function clear(): bluebird<import("lazy-cacache").ICacacheListEntry<any>>;
 export declare function close(): bluebird<import("lazy-cacache").ICacacheListEntry<any>>;

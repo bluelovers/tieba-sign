@@ -1,4 +1,4 @@
-const md5 = require( './md5' );
+import md5 = require( './md5' );
 
 export = function encrypt( data ) {
 	const SIGN_KEY = 'tiebaclient!!!';

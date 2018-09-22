@@ -1,7 +1,7 @@
 
-const event = require( '../event' );
-const _ = require( '../helpers' );
-const encrypt = require( '../encrypt' );
+import event = require( '../event' );
+import _ = require( '../helpers' );
+import encrypt = require( '../encrypt' );
 const delay = _.delay;
 import bluebird = require('bluebird');
 const api = {
@@ -44,7 +44,12 @@ const handlers = {
 			'tbs': data.tbs,
 		};
 
-		var json = {} as any;
+		var json = {} as {
+			error_code: string,
+			user_info: {
+				sign_bonus_point: number,
+			},
+		};
 		try {
 			const rst = yield api.sign( encrypt( postData ) );
 			json = JSON.parse( rst );
@@ -55,23 +60,23 @@ const handlers = {
 			json.error_code === '0' &&
 			( json.user_info && json.user_info.sign_bonus_point )
 		) {
-			event.emit( 'sign:success', {
+			yield event.emitAsync( 'sign:success', {
 				name: name,
 				point: json.user_info.sign_bonus_point, // 经验值
 			} );
 		} else {
-			event.emit( 'sign:failed', {
+			yield event.emitAsync( 'sign:failed', {
 				name: name,
 			} );
 		}
 	} ),
 	notSupport: bluebird.coroutine( function * ( name ) {
-		event.emit( 'sign:not-support', {
+		yield event.emitAsync( 'sign:not-support', {
 			name: name,
 		} );
 	} ),
 	alreadySigned: bluebird.coroutine( function * ( name ) {
-		event.emit( 'sign:already-signed', {
+		yield event.emitAsync( 'sign:already-signed', {
 			name: name,
 		} );
 	} ),
@@ -112,12 +117,12 @@ const signOneAndDelay = bluebird.coroutine( function * ( name ) {
 } );
 
 const signAll = bluebird.coroutine( function * ( names ) {
-	event.emit( 'sign:start' );
+	yield event.emitAsync( 'sign:start' );
 	names = names || [];
 	for ( var i = 0, len = names.length; i < len; i++ ) {
 		yield signOneAndDelay( names[ i ] );
 	}
-	event.emit( 'sign:end' );
+	yield event.emitAsync( 'sign:end' );
 } );
 
 export = signAll;

@@ -8,6 +8,7 @@ import sign = require( '../lib' );
 import cookieStore = require( './store/cookie' );
 import recordsStore = require( './store/records' );
 import bluebird = require('bluebird');
+import { console } from '../lib/console';
 
 updateNotifier({ pkg: pkg }).notify();
 
@@ -32,14 +33,14 @@ const argv = yargs
 
 		return cookieStore.save({
 			bduss: bduss,
-		}).then(v => console.log('saved'))
+		}).then(v => console.success('cookies saved'))
 	})
 	.command('clear', 'clear stored data', function (yargs)
 	{
 		bluebird.all([
 			cookieStore.clear(),
 			recordsStore.clear(),
-		]).thenReturn(console.log('cleared'));
+		]).thenReturn(console.info('data cleared'));
 
 		return yargs;
 	})
@@ -51,28 +52,11 @@ const argv = yargs
 		})
 	}, function (argv)
 	{
-		main({
+		return main({
 			skipCache: !!argv.skipCache,
 		});
 	})
 	.argv;
-
-const handlers = {
-	cookie: function (argv)
-	{
-		const bduss = argv._[1];
-		return cookieStore.save({
-			bduss: bduss,
-		}).then(v => console.log('saved'))
-	},
-	clear: function ()
-	{
-		return bluebird.all([
-			cookieStore.clear(),
-			recordsStore.clear(),
-		]).thenReturn(console.log('cleared'))
-	},
-};
 
 function main(options)
 {
@@ -85,17 +69,17 @@ function main(options)
 	const service = sign.service;
 	const createJar = sign.createJar;
 
-	bluebird.coroutine(function* ()
+	return bluebird.coroutine(function* ()
 	{
 		const cookie = yield cookieStore.load();
 		const bduss = cookie.bduss;
 
 		if (!bduss)
 		{
-			throw new MyError(`請先執行 ${argv.$0} cookie`)
+			throw new MyError(`請先執行 ${argv.$0} cookie [bduss]`)
 		}
 
-		console.log(bduss);
+		//console.log(bduss);
 
 		// setup Service
 		Service.jar(createJar([
@@ -128,7 +112,7 @@ function main(options)
 		{
 			return !~signed.indexOf(like);
 		});
-		console.log('共', likes.length, '個貼吧，已簽到', signed.length, '個\n');
+		console.log('共', likes.length, '個貼吧，已簽到', signed.length, '個');
 		yield service.sign(filtered);
 
 	})()
