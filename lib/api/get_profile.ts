@@ -1,6 +1,6 @@
-const API = require( '../api' );
+import API = require( '../api' );
 
-module.exports = API.create( {
+export = API.create( {
 	method: 'post',
 	url: 'http://tieba.baidu.com/c/s/login',
 	raw: true,

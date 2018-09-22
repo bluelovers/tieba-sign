@@ -1,3 +1,2 @@
-var EventEmitter = require( 'eventemitter2' ).EventEmitter2;
-
-module.exports = new EventEmitter();
+import { EventEmitter2 as EventEmitter } from  'eventemitter2' ;
+export = new EventEmitter();

@@ -1,19 +1,44 @@
-var Conf = require('conf');
-var _ = require('../../lib/helpers');
-var getDate = _.getDate;
-var conf = new Conf({
-    configName: 'records',
-});
-module.exports = {
-    save: function (type, record) {
-        var records = conf.get(getDate() + '.' + type) || [];
-        records.push(record);
-        conf.set(getDate() + '.' + type, records);
-    },
-    load: function (type) {
-        return conf.get(getDate() + '.' + type) || [];
-    },
-    clear: function () {
-        conf.clear();
-    },
-};
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const cache_1 = require("../../lib/cache");
+const helpers_1 = require("../../lib/helpers");
+let CACHE_DB_KEY = 'records';
+function getkey(type) {
+    let date = helpers_1.getDate();
+    let key = date + '.' + type;
+    return key;
+}
+exports.getkey = getkey;
+async function save(type, record) {
+    let date = helpers_1.getDate();
+    return cache_1.default.readJSONIfExists(CACHE_DB_KEY)
+        .then(function (data) {
+        let json = data && data.json || {};
+        json[date] = json[date] || {};
+        json[date][type] = json[date][type] || [];
+        json[date][type].push(record);
+        return cache_1.default.writeJSON(CACHE_DB_KEY, {
+            [date]: json[date],
+        });
+    });
+}
+exports.save = save;
+function load(type) {
+    let date = helpers_1.getDate();
+    return cache_1.default.readJSONIfExists(CACHE_DB_KEY)
+        .then(function (data) {
+        if (data && data.json[date] && data.json[date][type]) {
+            return data.json[date][type];
+        }
+        return [];
+    });
+}
+exports.load = load;
+function clear() {
+    return cache_1.default.clearKey(CACHE_DB_KEY).then(ls => console.log(ls));
+}
+exports.clear = clear;
+function close() {
+    return cache_1.default.clearKey(CACHE_DB_KEY, true);
+}
+exports.close = close;

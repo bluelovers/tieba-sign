@@ -1,10 +1,11 @@
-const co = require( 'co' );
+
 const getMyLikeTieba = require( '../api/get_likes' );
 const event = require( '../event' );
+import bluebird = require('bluebird');
 const _ = require( '../helpers' );
 const delay = _.delay;
 
-const getTotalPageNo = co.wrap( function * () {
+const getTotalPageNo = bluebird.coroutine( function * () {
 	var content = yield getMyLikeTieba( 1, +new Date() - 600000 );
 	content = processHTML( content );
 
@@ -18,7 +19,7 @@ const getTotalPageNo = co.wrap( function * () {
 	return totalPageNo;
 } );
 
-const getLikesByPageNo = co.wrap( function * ( pageNo ) {
+const getLikesByPageNo = bluebird.coroutine( function * ( pageNo ) {
 	var content = yield getMyLikeTieba( pageNo || 1, +new Date() - 600000 );
 	content = processHTML( content );
 
@@ -44,7 +45,7 @@ function processHTML( content ) {
 		.replace(/<span.*?span>\r\n/g, '');
 }
 
-module.exports = co.wrap( function * () {
+export = bluebird.coroutine( function * () {
 	const totalPageNo = yield getTotalPageNo();
 
 	const likes = [];

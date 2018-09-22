@@ -1,6 +1,6 @@
 // this api is not used in this project
-const API = require( '../api' );
+import API = require( '../api' );
 
-module.exports = API.create( {
+export = API.create( {
 	url: 'http://tieba.baidu.com/dc/common/tbs',
 } );

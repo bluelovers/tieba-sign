@@ -1,6 +1,6 @@
-const API = require( '../api' );
+import API = require( '../api' );
 
-module.exports = API.create( {
+export = API.create( {
 	method: 'post',
 	url: 'http://tieba.baidu.com/c/f/forum/like',
 	raw: true,

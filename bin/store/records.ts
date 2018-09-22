@@ -1,21 +1,71 @@
-const Conf = require( 'conf' );
-const _ = require( '../../lib/helpers' );
-const getDate = _.getDate;
+import cache from '../../lib/cache';
+import bluebird = require('bluebird');
+import { getDate } from '../../lib/helpers';
+import fs = require('fs-extra');
 
-const conf = new Conf( {
-	configName: 'records',
-} );
+let CACHE_DB_KEY = 'records';
 
-module.exports = {
-	save: function( type, record ) {
-		const records = conf.get( getDate() + '.' + type ) || [];
-		records.push( record );
-		conf.set( getDate() + '.' + type, records );
-	},
-	load: function( type ) {
-		return conf.get( getDate() + '.' + type ) || [];
-	},
-	clear: function() {
-		conf.clear();
-	},
-};
+export interface IRecords
+{
+	[k: string]: IRecordsDay
+}
+
+export interface IRecordsDay
+{
+	signed?: string[],
+}
+
+export function getkey(type: string)
+{
+	let date = getDate();
+	let key = date + '.' + type;
+
+	return key;
+}
+
+export async function save(type: string, record: any[])
+{
+	let date = getDate();
+
+	return cache.readJSONIfExists<IRecords>(CACHE_DB_KEY)
+		.then(function (data)
+		{
+			let json: IRecords = data && data.json || {};
+
+			json[date] = json[date] || {};
+			json[date][type] = json[date][type] || [];
+
+			json[date][type].push(record);
+
+			return cache.writeJSON(CACHE_DB_KEY, {
+				[date]: json[date],
+			});
+		})
+		;
+}
+
+export function load(type: string)
+{
+	let date = getDate();
+
+	return cache.readJSONIfExists<IRecords>(CACHE_DB_KEY)
+		.then(function (data)
+		{
+			if (data && data.json[date] && data.json[date][type])
+			{
+				return data.json[date][type]
+			}
+
+			return [];
+		})
+}
+
+export function clear()
+{
+	return cache.clearKey(CACHE_DB_KEY).then(ls => console.log(ls))
+}
+
+export function close()
+{
+	return cache.clearKey(CACHE_DB_KEY, true)
+}

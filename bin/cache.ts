@@ -1,7 +1,7 @@
-const event = require( '../lib/event' );
-const store = require( './store/records' );
+import event = require( '../lib/event' );
+import store = require( './store/records' );
 
-module.exports = function () {
+export = function () {
 	event.on( 'sign:success', function ( data ) {
 		store.save( 'signed', data.name );
 	} );

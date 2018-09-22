@@ -1,6 +1,7 @@
-const co = require( 'co' );
-const skipAd = require( '../api/skip_ad' );
 
-module.exports = co.wrap( function * () {
+const skipAd = require( '../api/skip_ad' );
+import bluebird = require('bluebird');
+
+export = bluebird.coroutine( function * () {
 	yield skipAd();
 } );

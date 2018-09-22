@@ -1,9 +1,10 @@
-const co = require( 'co' );
+
 const getMyLikeTieba = require( '../api/get_likes_fast' );
 const event = require( '../event' );
 const encrypt = require( '../encrypt' );
+import bluebird = require('bluebird');
 
-module.exports = co.wrap( function * ( bduss ) {
+export = bluebird.coroutine( function * ( bduss ) {
 	const postData = {
 		'BDUSS': bduss,
 		_client_id: '03-00-DA-59-05-00-72-96-06-00-01-00-04-00-4C-43-01-00-34-F4-02-00-BC-25-09-00-4E-36',

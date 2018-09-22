@@ -10,4 +10,4 @@ function createJar( cookies ) {
 	return jar;
 }
 
-module.exports = createJar;
+export = createJar;

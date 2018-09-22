@@ -1,23 +1,26 @@
-const ora = require( 'ora' );
-const chalk = require( 'chalk' );
-const event = require( './event' );
+import ora = require( 'ora' );
+import chalk = require( 'chalk' );
+import event = require( './event' );
 
 const logger = {
-	log: function ( message, label ) {
+	log: function ( message, label? ) {
 		console.log( ' ' + label + ' ' + message.trim() + '\n' );
 	},
-	success: function ( message, label ) {
+	success: function ( message, label? ) {
+		// @ts-ignore
 		this.log( message, chalk.bgGreen.black( label ? ' ' + label + ' ' : ' SUCCESS ' ) );
 	},
-	error: function ( message, label ) {
+	error: function ( message, label? ) {
+		// @ts-ignore
 		this.log( message, chalk.bgRed.black( label ? ' ' + label + ' ' : '  ERROR  ' ) );
 	},
-	warn: function ( message, label ) {
+	warn: function ( message, label? ) {
+		// @ts-ignore
 		this.log( message, chalk.bgYellow.black( label ? ' ' + label + ' ' : ' WARNING ' ) );
 	},
 }
 
-module.exports = function () {
+export = function () {
 	const spinner = ora( {
 		spinner: {
 			interval: 100,

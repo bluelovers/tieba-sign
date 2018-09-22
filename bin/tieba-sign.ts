@@ -1,51 +1,82 @@
 #!/usr/bin/env node
 'use strict';
 
-const updateNotifier = require( 'update-notifier' );
-const yargs = require( 'yargs' );
-const co = require( 'co' );
-const pkg = require( '../package.json' );
-const sign = require( '../lib' );
-const cookieStore = require( './store/cookie' );
-const recordsStore = require( './store/records' );
+import updateNotifier = require( 'update-notifier' );
+import yargs = require( 'yargs' );
+import pkg = require( '../package.json' );
+import sign = require( '../lib' );
+import cookieStore = require( './store/cookie' );
+import recordsStore = require( './store/records' );
+import bluebird = require('bluebird');
 
-updateNotifier( { pkg: pkg } ).notify();
+updateNotifier({ pkg: pkg }).notify();
+
+class MyError extends Error {}
 
 const argv = yargs
-	.alias( 's', 'skipCache' )
-	.command( 'cookie', 'store cookie locally' )
-	.command( 'clear', 'clear stored data' )
+	.usage(`tieba-sign cookie [bduss]`)
+	.command('cookie [bduss]', 'store BDUSS cookie locally', function (argv)
+	{
+		return argv
+	}, function (argv)
+	{
+		const bduss = argv.bduss;
+
+		if (!bduss)
+		{
+			console.dir(argv);
+
+			yargs.showHelp();
+			process.exit(1)
+		}
+
+		return cookieStore.save({
+			bduss: bduss,
+		}).then(v => console.log('saved'))
+	})
+	.command('clear', 'clear stored data', function (yargs)
+	{
+		bluebird.all([
+			cookieStore.clear(),
+			recordsStore.clear(),
+		]).thenReturn(console.log('cleared'));
+
+		return yargs;
+	})
+	.command('$0', 'clear stored data', function (yargs)
+	{
+		return yargs.option('skipCache', {
+			alias: ['s', 'skip'],
+			type: 'boolean',
+		})
+	}, function (argv)
+	{
+		main({
+			skipCache: !!argv.skipCache,
+		});
+	})
 	.argv;
 
 const handlers = {
-	cookie: function ( argv ) {
-		const bduss = argv._[ 1 ];
-		cookieStore.save( {
-			bduss: bduss
-		} );
-		console.log( 'saved' );
+	cookie: function (argv)
+	{
+		const bduss = argv._[1];
+		return cookieStore.save({
+			bduss: bduss,
+		}).then(v => console.log('saved'))
 	},
-	clear: function () {
-		cookieStore.clear();
-		recordsStore.clear();
-		console.log( 'cleared' );
-	}
-}
+	clear: function ()
+	{
+		return bluebird.all([
+			cookieStore.clear(),
+			recordsStore.clear(),
+		]).thenReturn(console.log('cleared'))
+	},
+};
 
-const commandName = argv._[ 0 ];
-const handler = handlers[ commandName ];
-
-// if command matched
-if ( typeof handler === 'function' ) {
-	handler( argv );
-} else {
-	main( {
-		skipCache: !!argv.skipCache
-	} );
-}
-
-function main( options ) {
-	require( './cache' )();
+function main(options)
+{
+	require('./cache')();
 
 	options = options || {};
 	const skipCache = options.skipCache;
@@ -54,42 +85,73 @@ function main( options ) {
 	const service = sign.service;
 	const createJar = sign.createJar;
 
-	co( function * () {
-		const cookie = cookieStore.load();
+	bluebird.coroutine(function* ()
+	{
+		const cookie = yield cookieStore.load();
 		const bduss = cookie.bduss;
 
+		if (!bduss)
+		{
+			throw new MyError(`請先執行 ${argv.$0} cookie`)
+		}
+
+		console.log(bduss);
+
 		// setup Service
-		Service.jar( createJar( [
+		Service.jar(createJar([
 			[
 				'BDUSS=' + bduss,
-				'http://tieba.baidu.com'
+				'http://tieba.baidu.com',
 			],
 			[
 				'novel_client_guide=1',
-				'http://tieba.baidu.com'
+				'http://tieba.baidu.com',
 			],
-		] ) );
+		]));
 
-		try {
-			yield service.skipAd();
+		yield service.skipAd();
 
-			const profile = yield service.getProfile( bduss );
-			const username = profile.username;
-			if ( username ) {
-				console.log( '开始用户 ' + username + ' 的签到' );
-			} else {
-				console.log( '开始签到' );
+		const profile = yield service.getProfile(bduss);
+		const username = profile.username;
+		if (username)
+		{
+			console.log('開始用戶 ' + username + ' 的簽到');
+		}
+		else
+		{
+			console.log('開始簽到');
+		}
+
+		const likes = (yield service.getlikesFast(bduss)) || [];
+		const signed = skipCache ? [] : yield recordsStore.load('signed');
+		const filtered = skipCache ? likes : likes.filter(function (like)
+		{
+			return !~signed.indexOf(like);
+		});
+		console.log('共', likes.length, '個貼吧，已簽到', signed.length, '個\n');
+		yield service.sign(filtered);
+
+	})()
+		.finally(function ()
+		{
+			return bluebird.all([
+				cookieStore.close(),
+				recordsStore.close(),
+			])
+		})
+		.catch(function (e)
+		{
+			if (e instanceof MyError)
+			{
+				console.error(e.message);
+			}
+			else
+			{
+				console.error(e);
 			}
 
-			const likes = ( yield service.getlikesFast( bduss ) ) || [];
-			const signed = skipCache ? [] : recordsStore.load( 'signed' );
-			const filtered = skipCache ? likes : likes.filter( function ( like ) {
-				return !~signed.indexOf( like );
-			} );
-			console.log( '共', likes.length, '个贴吧，已签到', signed.length, '个\n' );
-			yield service.sign( filtered );
-		} catch( e ) {
-			throw e;
-		}
-	} );
+			process.exit(1)
+		})
+	;
 }
+

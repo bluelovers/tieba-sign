@@ -1,6 +1,6 @@
 require( './log' )();
 
-module.exports = {
+export = {
 	Service: require( './api' ),
 	createJar: require( './createJar' ),
 	service: {

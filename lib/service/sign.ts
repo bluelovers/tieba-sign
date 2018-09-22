@@ -1,14 +1,15 @@
-const co = require( 'co' );
+
 const event = require( '../event' );
 const _ = require( '../helpers' );
 const encrypt = require( '../encrypt' );
 const delay = _.delay;
+import bluebird = require('bluebird');
 const api = {
 	getSignStatus: require( '../api/get_sign_status' ),
 	sign: require( '../api/sign' ),
 };
 
-const getSignStatus = co.wrap( function * ( name ) {
+const getSignStatus = bluebird.coroutine( function * ( name ) {
 	const content = yield api.getSignStatus( name );
 	const matched = content.match( /<td[ ]style="text-align:right;".*?<\/td>/ );
 
@@ -31,7 +32,7 @@ const getSignStatus = co.wrap( function * ( name ) {
 } );
 
 const handlers = {
-	doSignOne: co.wrap( function * ( name, data ) {
+	doSignOne: bluebird.coroutine( function * ( name, data ) {
 		const postData = {
 			'_client_id': '03-00-DA-59-05-00-72-96-06-00-01-00-04-00-4C-43-01-00-34-F4-02-00-BC-25-09-00-4E-36',
 			'_client_type': '4',
@@ -43,7 +44,7 @@ const handlers = {
 			'tbs': data.tbs,
 		};
 
-		var json = {};
+		var json = {} as any;
 		try {
 			const rst = yield api.sign( encrypt( postData ) );
 			json = JSON.parse( rst );
@@ -64,19 +65,19 @@ const handlers = {
 			} );
 		}
 	} ),
-	notSupport: co.wrap( function * ( name ) {
+	notSupport: bluebird.coroutine( function * ( name ) {
 		event.emit( 'sign:not-support', {
 			name: name,
 		} );
 	} ),
-	alreadySigned: co.wrap( function * ( name ) {
+	alreadySigned: bluebird.coroutine( function * ( name ) {
 		event.emit( 'sign:already-signed', {
 			name: name,
 		} );
 	} ),
 };
 
-const signOne = co.wrap( function * ( name ) {
+const signOne = bluebird.coroutine( function * ( name ) {
 	try {
 		const rst = yield getSignStatus( name );
 
@@ -102,7 +103,7 @@ const signOne = co.wrap( function * ( name ) {
 	}
 } );
 
-const signOneAndDelay = co.wrap( function * ( name ) {
+const signOneAndDelay = bluebird.coroutine( function * ( name ) {
 	const status = yield signOne( name );
 	// make a delay only when sign successfully
 	if ( status === '0' ) {
@@ -110,7 +111,7 @@ const signOneAndDelay = co.wrap( function * ( name ) {
 	}
 } );
 
-const signAll = co.wrap( function * ( names ) {
+const signAll = bluebird.coroutine( function * ( names ) {
 	event.emit( 'sign:start' );
 	names = names || [];
 	for ( var i = 0, len = names.length; i < len; i++ ) {
@@ -119,4 +120,4 @@ const signAll = co.wrap( function * ( names ) {
 	event.emit( 'sign:end' );
 } );
 
-module.exports = signAll;
+export = signAll;
