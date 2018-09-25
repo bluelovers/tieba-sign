@@ -5,8 +5,8 @@ const updateNotifier = require("update-notifier");
 const yargs = require("yargs");
 const pkg = require("../package.json");
 const sign = require("../lib");
-const cookieStore = require("./store/cookie");
-const recordsStore = require("./store/records");
+const cookieStore = require("../lib/store/cookie");
+const recordsStore = require("../lib/store/records");
 const bluebird = require("bluebird");
 const console_1 = require("../lib/console");
 updateNotifier({ pkg: pkg }).notify();
@@ -46,7 +46,7 @@ const argv = yargs
 })
     .argv;
 function main(options) {
-    require('./cache')();
+    require('../lib/hook/cache')();
     options = options || {};
     const skipCache = options.skipCache;
     const Service = sign.Service;

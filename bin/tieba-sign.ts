@@ -5,8 +5,8 @@ import updateNotifier = require( 'update-notifier' );
 import yargs = require( 'yargs' );
 import pkg = require( '../package.json' );
 import sign = require( '../lib' );
-import cookieStore = require( './store/cookie' );
-import recordsStore = require( './store/records' );
+import cookieStore = require( '../lib/store/cookie' );
+import recordsStore = require( '../lib/store/records' );
 import bluebird = require('bluebird');
 import { console } from '../lib/console';
 
@@ -60,7 +60,7 @@ const argv = yargs
 
 function main(options)
 {
-	require('./cache')();
+	require('../lib/hook/cache')();
 
 	options = options || {};
 	const skipCache = options.skipCache;
