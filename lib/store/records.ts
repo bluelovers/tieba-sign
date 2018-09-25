@@ -1,8 +1,8 @@
-import cache from '../../lib/cache';
+import cache from '../cache';
 import bluebird = require('bluebird');
-import { getDate } from '../../lib/helpers';
+import { getDate } from '../helpers';
 import fs = require('fs-extra');
-import { console } from '../../lib/console';
+import { console } from '../console';
 
 let CACHE_DB_KEY = 'records';
 

@@ -1,4 +1,4 @@
-import cache from '../../lib/cache';
+import cache from '../cache';
 import bluebird = require('bluebird');
 
 let CACHE_DB_KEY = 'cookie';

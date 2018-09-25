@@ -1,13 +1,25 @@
 require( './log' )();
 
-export = {
-	Service: require( './api' ),
-	createJar: require( './createJar' ),
-	service: {
-		getlikes: require( './service/get_likes' ),
-		getlikesFast: require( './service/get_likes_fast' ),
-		sign: require( './service/sign' ),
-		getProfile: require( './service/get_profile' ),
-		skipAd: require( './service/skip_ad' ),
-	},
+import Service = require( './api' );
+import createJar = require( './createJar' );
+
+import getlikes = require( './service/get_likes' );
+import getlikesFast = require( './service/get_likes_fast' );
+import sign = require( './service/sign' );
+import getProfile = require( './service/get_profile' );
+import skipAd = require( './service/skip_ad' );
+import bluebird = require('bluebird');
+
+
+export {
+	Service,
+	createJar,
+}
+
+export const service = {
+	getlikes,
+	getlikesFast,
+	sign,
+	getProfile,
+	skipAd,
 };
