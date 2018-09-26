@@ -9,6 +9,6 @@ declare class API {
     fetch(): Promise<{}>;
     static jar(cookieJar: any): void;
     static userAgent(userAgent: any): void;
-    static create(config: any): () => any;
+    static create(config: any): (...argv: any[]) => any;
 }
 export = API;
