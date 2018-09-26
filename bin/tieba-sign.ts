@@ -9,6 +9,7 @@ import cookieStore = require( '../lib/store/cookie' );
 import recordsStore = require( '../lib/store/records' );
 import bluebird = require('bluebird');
 import { console } from '../lib/console';
+import { options } from '../lib/cache';
 
 updateNotifier({ pkg: pkg }).notify();
 
@@ -16,10 +17,15 @@ class MyError extends Error {}
 
 const argv = yargs
 	.usage(`tieba-sign cookie [bduss]`)
+	.option('useGlobalCache', {
+		alias: ['g'],
+		boolean: true,
+	})
+	// @ts-ignore
 	.command('cookie [bduss]', 'store BDUSS cookie locally', function (argv)
 	{
 		return argv
-	}, function (argv)
+	}, function (argv: IArgv)
 	{
 		const bduss = argv.bduss;
 
@@ -31,12 +37,16 @@ const argv = yargs
 			process.exit(1)
 		}
 
+		handleOptions(argv);
+
 		return cookieStore.save({
 			bduss: bduss,
 		}).then(v => console.success('cookies saved'))
 	})
 	.command('clear', 'clear stored data', function (yargs)
 	{
+		handleOptions(yargs.argv as IArgv);
+
 		bluebird.all([
 			cookieStore.clear(),
 			recordsStore.clear(),
@@ -44,24 +54,45 @@ const argv = yargs
 
 		return yargs;
 	})
+	// @ts-ignore
 	.command('$0', 'clear stored data', function (yargs)
 	{
 		return yargs.option('skipCache', {
 			alias: ['s', 'skip'],
 			type: 'boolean',
 		})
-	}, function (argv)
+	}, function (argv: IArgv)
 	{
-		return main({
-			skipCache: !!argv.skipCache,
-		});
+		return main(argv as IArgv);
 	})
 	.argv;
 
-function main(options)
+export interface IArgv extends yargs.Argv
 {
+	useGlobalCache?: boolean,
+	skipCache?: boolean,
+	bduss?: string,
+}
+
+function handleOptions(argv: IArgv)
+{
+	if (argv.useGlobalCache)
+	{
+		options.useGlobalCache = true;
+	}
+
+	console.debug(argv, options);
+
+	return argv;
+}
+
+function main(options: IArgv)
+{
+	handleOptions(options);
+
 	require('../lib/hook/cache')();
 
+	// @ts-ignore
 	options = options || {};
 	const skipCache = options.skipCache;
 

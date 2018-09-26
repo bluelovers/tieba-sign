@@ -1,5 +1,7 @@
 /**
  * Created by user on 2018/9/22/022.
  */
-export declare const cache: import("lazy-cacache").Cacache;
-export default cache;
+import { ICacacheOptions } from 'lazy-cacache';
+export declare let options: ICacacheOptions;
+export declare function getCache(opts?: ICacacheOptions): import("lazy-cacache").Cacache;
+export default getCache;

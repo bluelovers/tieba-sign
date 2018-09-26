@@ -1,4 +1,4 @@
-import cache from '../cache';
+import getCache from '../cache';
 import bluebird = require('bluebird');
 
 let CACHE_DB_KEY = 'cookie';
@@ -7,7 +7,7 @@ export async function save(cookie: {
 	bduss: string
 })
 {
-	return cache.writeJSON(CACHE_DB_KEY, cookie, {
+	return getCache().writeJSON(CACHE_DB_KEY, cookie, {
 		metadata: {
 			kkk: 7,
 		},
@@ -17,7 +17,7 @@ export async function save(cookie: {
 
 export function load()
 {
-	return cache.readJSONIfExists<{
+	return getCache().readJSONIfExists<{
 			bduss: string
 		}>(CACHE_DB_KEY)
 		.then(function (data)
@@ -31,10 +31,10 @@ export function load()
 
 export function clear()
 {
-	return cache.clearKey(CACHE_DB_KEY)
+	return getCache().clearKey(CACHE_DB_KEY)
 }
 
 export function close()
 {
-	return cache.clearKey(CACHE_DB_KEY, true)
+	return getCache().clearKey(CACHE_DB_KEY, true)
 }

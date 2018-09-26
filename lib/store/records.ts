@@ -1,4 +1,4 @@
-import cache from '../cache';
+import getCache from '../cache';
 import bluebird = require('bluebird');
 import { getDate } from '../helpers';
 import fs = require('fs-extra');
@@ -28,7 +28,7 @@ export async function save(type: string, record: any[])
 {
 	let date = getDate();
 
-	return cache.readJSONIfExists<IRecords>(CACHE_DB_KEY)
+	return getCache().readJSONIfExists<IRecords>(CACHE_DB_KEY)
 		.then(function (data)
 		{
 			let json: IRecords = data && data.json || {};
@@ -38,7 +38,7 @@ export async function save(type: string, record: any[])
 
 			json[date][type].push(record);
 
-			return cache.writeJSON(CACHE_DB_KEY, {
+			return getCache().writeJSON(CACHE_DB_KEY, {
 				[date]: json[date],
 			});
 		})
@@ -49,7 +49,7 @@ export function load(type: string)
 {
 	let date = getDate();
 
-	return cache.readJSONIfExists<IRecords>(CACHE_DB_KEY)
+	return getCache().readJSONIfExists<IRecords>(CACHE_DB_KEY)
 		.then(function (data)
 		{
 			if (data && data.json[date] && data.json[date][type])
@@ -63,10 +63,10 @@ export function load(type: string)
 
 export function clear()
 {
-	return cache.clearKey(CACHE_DB_KEY).then(ls => console.log(ls))
+	return getCache().clearKey(CACHE_DB_KEY).then(ls => console.log(ls))
 }
 
 export function close()
 {
-	return cache.clearKey(CACHE_DB_KEY, true)
+	return getCache().clearKey(CACHE_DB_KEY, true)
 }
