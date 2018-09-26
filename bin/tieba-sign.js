@@ -56,7 +56,7 @@ function handleOptions(argv) {
     if (argv.useGlobalCache) {
         cache_1.options.useGlobalCache = true;
     }
-    console_1.console.debug(argv, cache_1.options);
+    //console.debug(argv, options);
     return argv;
 }
 function main(options) {

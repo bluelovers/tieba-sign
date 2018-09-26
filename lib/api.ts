@@ -55,7 +55,7 @@ class API
 			headers: headers,
 		}
 
-		var options = {};
+		var options = {} as request.Options;
 		if (this.method.toLowerCase() === 'post')
 		{
 			options = Object.assign(

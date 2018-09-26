@@ -81,7 +81,7 @@ function handleOptions(argv: IArgv)
 		options.useGlobalCache = true;
 	}
 
-	console.debug(argv, options);
+	//console.debug(argv, options);
 
 	return argv;
 }
