@@ -51,7 +51,7 @@ function processHTML(content)
 		.replace(/<span.*?span>\r\n/g, '');
 }
 
-export = bluebird.coroutine<string[]>(function* ()
+export = bluebird.coroutine<string[], string>(function* (...argv)
 {
 	const totalPageNo = yield getTotalPageNo();
 
