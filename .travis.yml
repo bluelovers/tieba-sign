@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+- '10'
+cache:
+  directories:
+#  - ".cache"
+before_install:
+install:
+- yarn install
+- yarn list
+before_script:
+script:
+- git --version
+- npm run do-bugfix
+env:
+  global:
+  - CLONE_DEPTH=5

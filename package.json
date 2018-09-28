@@ -1,10 +1,28 @@
 {
-  "name": "tieba-sign",
+  "name": "tieba-sign2",
   "version": "0.1.2",
   "description": "tieba-sign",
+  "keywords": [
+    "sign",
+    "tieba"
+  ],
+  "homepage": "https://github.com/bluelovers/tieba-sign#readme",
+  "bugs": {
+    "url": "https://github.com/bluelovers/tieba-sign/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bluelovers/tieba-sign.git"
+  },
+  "license": "MIT",
+  "author": "feng_zilong@163.com",
   "main": "lib/index.js",
   "bin": {
     "tieba-sign": "bin/tieba-sign.js"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
   },
   "scripts": {},
   "dependencies": {
@@ -25,11 +43,5 @@
   "devDependencies": {
     "@types/node": "^10",
     "@types/yargs": "^12.0.0"
-  },
-  "keywords": [
-    "tieba",
-    "sign"
-  ],
-  "author": "feng_zilong@163.com",
-  "license": "MIT"
+  }
 }

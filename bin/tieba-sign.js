@@ -43,7 +43,7 @@ const argv = yargs
     return yargs;
 })
     // @ts-ignore
-    .command('$0', 'clear stored data', function (yargs) {
+    .command('$0', '', function (yargs) {
     return yargs.option('skipCache', {
         alias: ['s', 'skip'],
         type: 'boolean',
