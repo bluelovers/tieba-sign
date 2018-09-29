@@ -48,9 +48,14 @@ const argv = yargs
 })
     // @ts-ignore
     .command('$0', '', function (yargs) {
-    return yargs.option('skipCache', {
+    return yargs
+        .option('skipCache', {
         alias: ['s', 'skip'],
         type: 'boolean',
+    })
+        .option('cookie', {
+        alias: ['c'],
+        string: true,
     });
 }, function (argv) {
     return main(argv);
@@ -73,8 +78,14 @@ function main(options) {
     const service = sign.service;
     const createJar = sign.createJar;
     return bluebird.coroutine(function* () {
-        const cookie = yield cookieStore.load();
-        const bduss = cookie.bduss;
+        let bduss;
+        if (options.cookie) {
+            bduss = options.cookie;
+        }
+        else {
+            const cookie = yield cookieStore.load();
+            bduss = cookie.bduss;
+        }
         if (!bduss) {
             throw new MyError(`請先執行 ${argv.$0} cookie [bduss]`);
         }

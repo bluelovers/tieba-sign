@@ -61,10 +61,16 @@ const argv = yargs
 	// @ts-ignore
 	.command('$0', '', function (yargs)
 	{
-		return yargs.option('skipCache', {
-			alias: ['s', 'skip'],
-			type: 'boolean',
-		})
+		return yargs
+			.option('skipCache', {
+				alias: ['s', 'skip'],
+				type: 'boolean',
+			})
+			.option('cookie', {
+				alias: ['c'],
+				string: true,
+			})
+			;
 	}, function (argv: IArgv)
 	{
 		return main(argv as IArgv);
@@ -77,8 +83,8 @@ export interface IArgv extends yargs.Argv
 	skipCache?: boolean,
 	bduss?: string,
 	hideUser?: boolean,
+	cookie?: string,
 }
-
 
 function handleOptions(argv: IArgv)
 {
@@ -107,52 +113,61 @@ function main(options: IArgv)
 	const createJar = sign.createJar;
 
 	return bluebird.coroutine(function* ()
-	{
-		const cookie = yield cookieStore.load();
-		const bduss = cookie.bduss;
-
-		if (!bduss)
 		{
-			throw new MyError(`請先執行 ${argv.$0} cookie [bduss]`)
-		}
+			let bduss: string;
 
-		//console.log(bduss);
+			if (options.cookie)
+			{
+				bduss = options.cookie;
+			}
+			else
+			{
+				const cookie = yield cookieStore.load();
+				bduss = cookie.bduss;
+			}
 
-		// setup Service
-		Service.jar(createJar([
-			[
-				'BDUSS=' + bduss,
-				'http://tieba.baidu.com',
-			],
-			[
-				'novel_client_guide=1',
-				'http://tieba.baidu.com',
-			],
-		]));
+			if (!bduss)
+			{
+				throw new MyError(`請先執行 ${argv.$0} cookie [bduss]`)
+			}
 
-		yield service.skipAd();
+			//console.log(bduss);
 
-		const profile = yield service.getProfile(bduss);
-		const username = profile.username;
-		if (!options.hideUser && username)
-		{
-			console.log('開始用戶 ' + username + ' 的簽到');
-		}
-		else
-		{
-			console.log('開始簽到');
-		}
+			// setup Service
+			Service.jar(createJar([
+				[
+					'BDUSS=' + bduss,
+					'http://tieba.baidu.com',
+				],
+				[
+					'novel_client_guide=1',
+					'http://tieba.baidu.com',
+				],
+			]));
 
-		const likes = (yield service.getlikesFast(bduss)) || [];
-		const signed = skipCache ? [] : yield recordsStore.load('signed');
-		const filtered = skipCache ? likes : likes.filter(function (like)
-		{
-			return !~signed.indexOf(like);
-		});
-		console.log('共', likes.length, '個貼吧，已簽到', signed.length, '個');
-		yield service.sign(filtered);
+			yield service.skipAd();
 
-	})()
+			const profile = yield service.getProfile(bduss);
+			const username = profile.username;
+			if (!options.hideUser && username)
+			{
+				console.log('開始用戶 ' + username + ' 的簽到');
+			}
+			else
+			{
+				console.log('開始簽到');
+			}
+
+			const likes = (yield service.getlikesFast(bduss)) || [];
+			const signed = skipCache ? [] : yield recordsStore.load('signed');
+			const filtered = skipCache ? likes : likes.filter(function (like)
+			{
+				return !~signed.indexOf(like);
+			});
+			console.log('共', likes.length, '個貼吧，已簽到', signed.length, '個');
+			yield service.sign(filtered);
+
+		})()
 		.finally(function ()
 		{
 			return bluebird.all([
@@ -173,6 +188,6 @@ function main(options: IArgv)
 
 			process.exit(1)
 		})
-	;
+		;
 }
 
