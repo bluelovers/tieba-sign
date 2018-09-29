@@ -6,7 +6,7 @@ import { console } from './console';
 const logger = {
 	log: function (message, label?)
 	{
-		console.log(' ' + label + ' ' + message.trim() + '\n');
+		console.log(' ' + label + ' ' + message.trim());
 	},
 	success: function (message, label?)
 	{

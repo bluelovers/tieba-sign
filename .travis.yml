@@ -11,7 +11,6 @@ install:
 before_script:
 script:
 - git --version
-- npm run do-bugfix
 - node bin/tieba-sign cookie $bduss
 - node bin/tieba-sign --hideUser
 env:
