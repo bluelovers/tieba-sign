@@ -7,7 +7,7 @@
 ## Installation
 
 ```bash
-$ npm i tieba-sign -g
+$ npm i tieba-sign2 -g
 ```
 
 ## Usage
@@ -16,19 +16,19 @@ $ npm i tieba-sign -g
 
 ```bash
 # set cookie
-$ ts cookie <bduss>
+$ tieba-sign cookie <bduss>
 # sign
-$ ts
+$ tieba-sign
 ```
 
 ### All Commands
 
 Command | Description
 ------- | -----------
-ts cookie | save cookie locally
-ts | sign
-ts -s | skip cache and sign
-ts clear | clear stored data, including cookie
+tieba-sign cookie | save cookie locally
+tieba-sign | sign
+tieba-sign -s | skip cache and sign
+tieba-sign clear | clear stored data, including cookie
 
 ## License
 
