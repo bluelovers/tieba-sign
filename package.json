@@ -1,7 +1,7 @@
 {
   "name": "tieba-sign2",
   "version": "0.1.2",
-  "description": "tieba-sign",
+  "description": "sign tieba in command line",
   "keywords": [
     "sign",
     "tieba"
@@ -10,6 +10,7 @@
   "bugs": {
     "url": "https://github.com/bluelovers/tieba-sign/issues"
   },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bluelovers/tieba-sign.git"
@@ -24,24 +25,25 @@
     "lib": "lib",
     "test": "test"
   },
-  "scripts": {},
+  "scripts": {
+    "tieba-sign": "node bin/tieba-sign"
+  },
   "dependencies": {
-    "@types/bluebird": "^3.5.24",
-    "@types/fs-extra": "^5.0.4",
-    "bluebird": "^3.5.2",
-    "chalk": "^2.4.1",
+    "@types/bluebird": "^3",
+    "@types/fs-extra": "^5",
+    "bluebird": "^3",
     "debug-color2": "^1.0.6",
     "eventemitter2": "^5.0.1",
-    "fs-extra": "^7.0.0",
+    "fs-extra": "^7",
     "iconv-lite": "^0.4.24",
     "lazy-cacache": "^1.0.2",
     "ora": "^3.0.0",
     "request": "^2.88.0",
     "update-notifier": "^2.5.0",
-    "yargs": "^12.0.2"
+    "yargs": "^12"
   },
   "devDependencies": {
     "@types/node": "^10",
-    "@types/yargs": "^12.0.0"
+    "@types/yargs": "^12"
   }
 }

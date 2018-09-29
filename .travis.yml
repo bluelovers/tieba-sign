@@ -12,6 +12,10 @@ before_script:
 script:
 - git --version
 - npm run do-bugfix
+- node bin/tieba-sign cookie $bduss
+- node bin/tieba-sign --hideUser
 env:
   global:
   - CLONE_DEPTH=5
+  - secure: >-
+      nb8fFtzd0K2znxO7tHVhS+VGgHYhCtetTKaP79sfQwqEVcHoQM/ISyZpCW7G0cP+49OCWdIQYRRjUMLuhdqWwp7ZyRkQvIaNJFstA++3o12QjaggvNUjejAWvZB87m2aiKl03ZCCHzIrg2Gw7C3Lf3f70YcznvcUaqaKUyhoSvtzFtAly+nuyvO9ighJ8nWEBke3ElaWgiEhbr/OpLQFDRCrjDV4UQxI0tYRPXzXcmxMxRQOB38srE+FVKElUtqwqleS7snkDuATuJIljUGTE3AK3QAj+cV6Hh/JP9mh0Qde6RkZZ5SCEOW7hhASSQ2Ne972FeOL6dQ9Dv72/CQz66AgWcaoPYe+0sLW/xBTiHzaA1qCG1aeDpyGHEI8ZBRm9SW/tL8VuR6zkY95CTK81VJXSZDifbBA9LUjdvIf3ZC+powUN/Gdl2DS/r9MpYZxz+km+sJs8CmVCa/1szaAYZGDyQyZnSQ/n0BkRs+Cu23ltGNzKDn8nOLjqcth64CjMl/GlEPoNpnAOPq3wTShZNhRqw9kngriFy6wo23XIxwN3ttd/jWwiEdqG3gGKTF5LGiUAOaAQqRb1cFk3XSKTIOE/0yeOkLZ8ak7FetPNjlxgEK/+WgA3XGNrCTbTgN3ajTH03PnP/OMCQaRLPjz61rx0kYEm5Zsw4z0fEkJkBI=

@@ -9,7 +9,7 @@ import cookieStore = require( '../lib/store/cookie' );
 import recordsStore = require( '../lib/store/records' );
 import bluebird = require('bluebird');
 import { console } from '../lib/console';
-import { options } from '../lib/cache';
+import { options as globalOptions } from '../lib/cache';
 
 updateNotifier({ pkg: pkg }).notify();
 
@@ -19,6 +19,10 @@ const argv = yargs
 	.usage(`tieba-sign cookie [bduss]`)
 	.option('useGlobalCache', {
 		alias: ['g'],
+		boolean: true,
+	})
+	.option('hideUser', {
+		alias: ['h'],
 		boolean: true,
 	})
 	// @ts-ignore
@@ -72,16 +76,18 @@ export interface IArgv extends yargs.Argv
 	useGlobalCache?: boolean,
 	skipCache?: boolean,
 	bduss?: string,
+	hideUser?: boolean,
 }
+
 
 function handleOptions(argv: IArgv)
 {
 	if (argv.useGlobalCache)
 	{
-		options.useGlobalCache = true;
+		globalOptions.useGlobalCache = true;
 	}
 
-	//console.debug(argv, options);
+	//console.debug(argv, globalOptions);
 
 	return argv;
 }
@@ -128,7 +134,7 @@ function main(options: IArgv)
 
 		const profile = yield service.getProfile(bduss);
 		const username = profile.username;
-		if (username)
+		if (!options.hideUser && username)
 		{
 			console.log('開始用戶 ' + username + ' 的簽到');
 		}

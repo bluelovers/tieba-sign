@@ -4,4 +4,5 @@ export interface IArgv extends yargs.Argv {
     useGlobalCache?: boolean;
     skipCache?: boolean;
     bduss?: string;
+    hideUser?: boolean;
 }

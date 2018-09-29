@@ -19,6 +19,10 @@ const argv = yargs
     alias: ['g'],
     boolean: true,
 })
+    .option('hideUser', {
+    alias: ['h'],
+    boolean: true,
+})
     // @ts-ignore
     .command('cookie [bduss]', 'store BDUSS cookie locally', function (argv) {
     return argv;
@@ -56,7 +60,7 @@ function handleOptions(argv) {
     if (argv.useGlobalCache) {
         cache_1.options.useGlobalCache = true;
     }
-    //console.debug(argv, options);
+    //console.debug(argv, globalOptions);
     return argv;
 }
 function main(options) {
@@ -89,7 +93,7 @@ function main(options) {
         yield service.skipAd();
         const profile = yield service.getProfile(bduss);
         const username = profile.username;
-        if (username) {
+        if (!options.hideUser && username) {
             console_1.console.log('開始用戶 ' + username + ' 的簽到');
         }
         else {
