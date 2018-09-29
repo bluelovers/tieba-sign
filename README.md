@@ -1,6 +1,6 @@
 # TiebaSign
 
-[![npm package](https://img.shields.io/npm/v/tieba-sign.svg?style=flat-square)](https://www.npmjs.org/package/tieba-sign)
+[![Build Status](https://travis-ci.org/bluelovers/tieba-sign.svg?branch=master)](https://travis-ci.org/bluelovers/tieba-sign)
 
 > sign tieba in command line
 
