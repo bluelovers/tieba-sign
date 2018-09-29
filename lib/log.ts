@@ -11,12 +11,12 @@ const logger = {
 	success: function (message, label?)
 	{
 		// @ts-ignore
-		this.log(message, console.chalk.bgGreen.black(label ? ' ' + label + ' ' : ' SUCCESS '));
+		this.log(message, console.chalk.bgGreen.white(label ? ' ' + label + ' ' : ' SUCCESS '));
 	},
 	error: function (message, label?)
 	{
 		// @ts-ignore
-		this.log(message, console.chalk.bgRed.black(label ? ' ' + label + ' ' : '  ERROR  '));
+		this.log(message, console.chalk.bgRed.white(label ? ' ' + label + ' ' : '  ERROR  '));
 	},
 	warn: function (message, label?)
 	{

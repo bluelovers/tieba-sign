@@ -1,6 +1,6 @@
 {
   "name": "tieba-sign2",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "sign tieba in command line",
   "keywords": [
     "sign",

@@ -21,6 +21,13 @@ $ tieba-sign cookie <bduss>
 $ tieba-sign
 ```
 
+或者 以以下指令代替 將會同時設定 cookies 與 進行簽到
+
+```bash
+# set cookie & sign
+$ tieba-sign --cookie <bduss>
+```
+
 ### All Commands
 
 Command | Description
